@@ -45,6 +45,8 @@ import io.github.kitectlab.foliox.animation.rememberPageAnimationState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import androidx.compose.ui.tooling.preview.Preview
+import io.github.kitectlab.foliox.PageBackground
+import io.github.kitectlab.foliox.PageBackgrounds
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -105,34 +107,38 @@ fun PageReader(animationState: PageAnimationState) {
                 }
             }
         ) {
-            when (it) {
-                PageType.CURRENT -> {
-                    if (flow.itemCount <= 0) {
-                        Text("No item current")
-                    } else {
-                        flow[currentIndex]?.let {
-                            Text(it)
-                        } ?: Text("loading next")
+            PageBackground(
+                style = PageBackgrounds.parchment(),
+            ) {
+                when (it) {
+                    PageType.CURRENT -> {
+                        if (flow.itemCount <= 0) {
+                            Text("No item current")
+                        } else {
+                            flow[currentIndex]?.let {
+                                Text(it)
+                            } ?: Text("loading next")
+                        }
                     }
-                }
 
-                PageType.NEXT -> {
-                    if (currentIndex >= flow.itemCount - 1) {
-                        Text("No item next")
-                    } else {
-                        flow[currentIndex + 1]?.let {
-                            Text(it)
-                        } ?: Text("loading next")
+                    PageType.NEXT -> {
+                        if (currentIndex >= flow.itemCount - 1) {
+                            Text("No item next")
+                        } else {
+                            flow[currentIndex + 1]?.let {
+                                Text(it)
+                            } ?: Text("loading next")
+                        }
                     }
-                }
 
-                PageType.PREVIOUS -> {
-                    if (currentIndex <= 0) {
-                        Text("No item previous")
-                    } else {
-                        flow[currentIndex - 1]?.let {
-                            Text(it)
-                        } ?: Text("loading previous")
+                    PageType.PREVIOUS -> {
+                        if (currentIndex <= 0) {
+                            Text("No item previous")
+                        } else {
+                            flow[currentIndex - 1]?.let {
+                                Text(it)
+                            } ?: Text("loading previous")
+                        }
                     }
                 }
             }
