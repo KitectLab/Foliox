@@ -1,3 +1,4 @@
+import io.github.kitectlab.foliox.buildlogic.applyKotlinOptions
 import io.github.kitectlab.foliox.buildlogic.applyTargets
 
 plugins {
@@ -10,6 +11,7 @@ plugins {
 kotlin {
 
     applyTargets("core")
+    applyKotlinOptions()
 
     sourceSets {
         commonMain {

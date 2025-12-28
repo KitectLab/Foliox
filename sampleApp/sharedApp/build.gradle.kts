@@ -1,3 +1,4 @@
+import io.github.kitectlab.foliox.buildlogic.applyKotlinOptions
 import io.github.kitectlab.foliox.buildlogic.applyTargets
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
@@ -12,6 +13,7 @@ plugins {
 kotlin {
 
     applyTargets("sampleApp")
+    applyKotlinOptions()
 
     sourceSets {
 

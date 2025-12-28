@@ -62,7 +62,15 @@ fun PageAnimationContent(
             .pointerInput(state) {
                 detectTapGestures(
                     onTap = {
-
+                        scope.launch {
+                            val direction = state.tap(it)
+                            if (direction == Direction.NEXT) {
+                                onCurrentChange(PageType.NEXT)
+                            } else if (direction == Direction.PREVIOUS) {
+                                onCurrentChange(PageType.PREVIOUS)
+                            }
+                            state.resetAnimation()
+                        }
                     }
                 )
             }
@@ -81,10 +89,14 @@ fun PageAnimationContent(
                             } else if (direction == Direction.PREVIOUS) {
                                 onCurrentChange(PageType.PREVIOUS)
                             }
+                            state.resetAnimation()
                         }
                     },
                     onDragCancel = {
                         state.dragging = false
+                        scope.launch {
+                            state.resetAnimation()
+                        }
                     },
                     onDrag = { change, dragAmount ->
                         scope.launch {
@@ -107,15 +119,15 @@ fun PageAnimationContent(
             }
         }
         state.direction = animation.calculateDirection(state)
-        return@Layout when {
-            state.direction == Direction.PREVIOUS && state.hasPrevious -> {
+        return@Layout when (state.direction) {
+            Direction.PREVIOUS if state.hasPrevious -> {
                 val previous = previous.first().measure(constraints)
                 layout(current.width, current.height) {
                     current.placeWithLayer(0, 0, currentGraphicLayer)
                     previous.placeWithLayer(0, 0, targetGraphicLayer)
                 }
             }
-            state.direction == Direction.NEXT && state.hasNext -> {
+            Direction.NEXT if state.hasNext -> {
                 val next = next.first().measure(constraints)
                 layout(current.width, current.height) {
                     next.placeWithLayer(0, 0,  targetGraphicLayer)

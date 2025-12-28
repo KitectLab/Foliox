@@ -22,6 +22,13 @@ object PageBackgrounds {
         }
     }
 
+    context(context: DrawScope)
+    fun drawParchment() {
+        with(context) {
+            drawParchmentBackground()
+        }
+    }
+
     val None: PageBackground = {}
 }
 
@@ -39,9 +46,3 @@ fun PageBackground(
         content()
     }
 }
-
-/**
- * Helper for PageAnimationContent's DrawScope background using the same parchment style.
- * For generic Composable backgrounds there is no DrawScope bridge.
- */
-fun parchmentDrawBackground(): DrawScope.(page: PageType) -> Unit = { drawParchmentBackground() }

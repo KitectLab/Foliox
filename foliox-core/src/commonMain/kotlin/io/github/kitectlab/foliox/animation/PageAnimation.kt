@@ -10,9 +10,15 @@ import kotlin.math.abs
 abstract class PageAnimation() {
 
     open fun calculateDirection(state: PageAnimationState): Direction {
-//        if (!state.isRunning || !state.canRunAnimation) return Direction.NONE
+        if (!state.isRunning) return Direction.NONE
         val startX = state.startFirstPoint.x
-        val currentX  = state.finalOffset.value.x
+        val deltaX = state.finalOffset.value.x - state.startFirstPoint.x
+        if (deltaX > 0f) {
+            return Direction.PREVIOUS
+        }
+        if (deltaX < 0f) {
+            return Direction.NEXT
+        }
         if (startX < state.viewportSize.width * EDGE_ZONE_FRACTION) {
             return Direction.PREVIOUS
         }

@@ -59,15 +59,71 @@ class PageAnimationState {
         return mutex.mutate {
             var targetDirection = Direction.NONE
             val startX = startFirstPoint.x
-            val currentX  = finalOffset.value.x
-            if (startX < viewportSize.width * EDGE_ZONE_FRACTION && (currentX - startX) > viewportSize.width * SWIPE_THRESHOLD) {
+            val currentX = finalOffset.value.x
+            val deltaX = currentX - startX
+            if (deltaX > viewportSize.width * SWIPE_THRESHOLD) {
                 targetDirection = Direction.PREVIOUS
             }
-            if (startX > viewportSize.width * (1 - EDGE_ZONE_FRACTION) && (startX - currentX) > viewportSize.width * SWIPE_THRESHOLD) {
+            if (-deltaX > viewportSize.width * SWIPE_THRESHOLD) {
                 targetDirection = Direction.NEXT
             }
+            if (targetDirection == Direction.NEXT && !hasNext) {
+                targetDirection = Direction.NONE
+            }
+            if (targetDirection == Direction.PREVIOUS && !hasPrevious) {
+                targetDirection = Direction.NONE
+            }
             dragging = false
-            resetAnimation()
+            val targetOffset = when (targetDirection) {
+                Direction.NEXT -> Offset(
+                    x = startFirstPoint.x - viewportSize.width.toFloat(),
+                    y = startFirstPoint.y
+                )
+                Direction.PREVIOUS -> Offset(
+                    x = startFirstPoint.x + viewportSize.width.toFloat(),
+                    y = startFirstPoint.y
+                )
+                Direction.NONE -> startFirstPoint
+            }
+            lastOffset = finalOffset.value
+            finalOffset.animateTo(targetOffset)
+            targetDirection
+        }
+    }
+
+    suspend fun tap(offset: Offset): Direction {
+        return mutex.mutate {
+            startFirstPoint = offset
+            lastOffset = finalOffset.value
+            finalOffset.snapTo(offset)
+            dragging = false
+            var targetDirection = Direction.NONE
+            val startX = startFirstPoint.x
+            if (startX < viewportSize.width * EDGE_ZONE_FRACTION) {
+                targetDirection = Direction.PREVIOUS
+            }
+            if (startX > viewportSize.width * (1 - EDGE_ZONE_FRACTION)) {
+                targetDirection = Direction.NEXT
+            }
+            if (targetDirection == Direction.NEXT && !hasNext) {
+                targetDirection = Direction.NONE
+            }
+            if (targetDirection == Direction.PREVIOUS && !hasPrevious) {
+                targetDirection = Direction.NONE
+            }
+            val targetOffset = when (targetDirection) {
+                Direction.NEXT -> Offset(
+                    x = startFirstPoint.x - viewportSize.width.toFloat(),
+                    y = startFirstPoint.y
+                )
+                Direction.PREVIOUS -> Offset(
+                    x = startFirstPoint.x + viewportSize.width.toFloat(),
+                    y = startFirstPoint.y
+                )
+                Direction.NONE -> startFirstPoint
+            }
+            lastOffset = finalOffset.value
+            finalOffset.animateTo(targetOffset)
             targetDirection
         }
     }
