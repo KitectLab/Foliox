@@ -1,5 +1,6 @@
 package io.github.kitectlab.foliox.animation
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -19,7 +20,11 @@ import kotlin.math.atan2
 import kotlin.math.hypot
 import kotlin.math.min
 
-class CurlPageAnimation internal constructor() : PageAnimation() {
+@Stable
+data object CurlPageAnimation : PageAnimation() {
+
+    override val name: String = "CurlPageAnimation"
+
     override fun calculateDirection(state: PageAnimationState): Direction {
         if (!state.isRunning) return Direction.NONE
         val width = state.viewportSize.width.toFloat()

@@ -1,13 +1,15 @@
 package io.github.kitectlab.foliox.animation
 
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import io.github.kitectlab.foliox.PageType
-import kotlin.math.abs
 
 abstract class PageAnimation {
+
+    abstract val name: String
 
     open fun calculateDirection(state: PageAnimationState): Direction {
         if (!state.isRunning) return Direction.NONE
@@ -70,11 +72,14 @@ abstract class PageAnimation {
         internal const val SWIPE_THRESHOLD = 0.2f  // 滑动超过屏幕宽度的20%
         internal const val EDGE_ZONE_FRACTION = 0.3f  // 屏幕边缘10%区域作为触发区
 
-        fun cover(): CoverPageAnimation  = CoverPageAnimation()
+        @Stable
+        fun cover(): CoverPageAnimation  = CoverPageAnimation
 
-        fun slide(): SlidePageAnimation = SlidePageAnimation()
+        @Stable
+        fun slide(): SlidePageAnimation = SlidePageAnimation
 
-        fun curl(): CurlPageAnimation = CurlPageAnimation()
+        @Stable
+        fun curl(): CurlPageAnimation = CurlPageAnimation
 
     }
 

@@ -1,5 +1,6 @@
 package io.github.kitectlab.foliox.animation
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
@@ -10,7 +11,11 @@ import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import io.github.kitectlab.foliox.PageType
 
-class CoverPageAnimation internal constructor() : PageAnimation() {
+@Stable
+data object CoverPageAnimation : PageAnimation() {
+
+    override val name: String = "CoverPageAnimation"
+
     override fun DrawScope.drawToCanvas(
         state: PageAnimationState,
         currentGraphicLayer: GraphicsLayer,

@@ -1,10 +1,15 @@
 package io.github.kitectlab.foliox.animation
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
 import io.github.kitectlab.foliox.PageType
 
-class SlidePageAnimation internal constructor() : PageAnimation() {
+@Stable
+data object SlidePageAnimation : PageAnimation() {
+
+    override val name: String = "SlidePageAnimation"
+
     override fun DrawScope.transformCanvas(
         state: PageAnimationState,
         pageType: PageType,
