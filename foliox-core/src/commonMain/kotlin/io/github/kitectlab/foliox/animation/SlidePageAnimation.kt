@@ -15,7 +15,7 @@ class SlidePageAnimation internal constructor() : PageAnimation() {
                 withTransform(
                     transformBlock = {
                         val offset = (state.finalOffset.value.x - state.startFirstPoint.x).coerceAtLeast(-state.viewportSize.width.toFloat())
-                        if (pageType ==  PageType.NEXT) {
+                        if (pageType == PageType.NEXT) {
                             translate(left = state.viewportSize.width + offset)
                         } else if (pageType == PageType.CURRENT) {
                             translate(left = offset)
@@ -39,31 +39,6 @@ class SlidePageAnimation internal constructor() : PageAnimation() {
             }
             else -> {
                 drawBlock()
-            }
-        }
-        when (pageType) {
-            PageType.NEXT -> {
-                drawBlock()
-            }
-
-            else -> {
-                withTransform(
-                    {
-                        if (state.direction == Direction.NEXT) {
-                            translate(
-                                left = ((state.finalOffset.value.x - state.startFirstPoint.x)).coerceIn(
-                                    -state.viewportSize.width.toFloat()..0f
-                                ),
-                            )
-                        } else if (state.direction == Direction.PREVIOUS && pageType == PageType.PREVIOUS) {
-                            translate(
-                                left = -state.viewportSize.width + (state.finalOffset.value.x - state.startFirstPoint.x).coerceIn(0f, state.viewportSize.width.toFloat()),
-                            )
-                        }
-                    }
-                ) {
-                    drawBlock()
-                }
             }
         }
     }
