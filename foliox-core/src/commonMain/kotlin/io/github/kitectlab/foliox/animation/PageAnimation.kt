@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.layer.drawLayer
 import io.github.kitectlab.foliox.PageType
 import kotlin.math.abs
 
-abstract class PageAnimation() {
+abstract class PageAnimation {
 
     open fun calculateDirection(state: PageAnimationState): Direction {
         if (!state.isRunning) return Direction.NONE
