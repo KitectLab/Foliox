@@ -74,6 +74,8 @@ abstract class PageAnimation() {
 
         fun slide(): SlidePageAnimation = SlidePageAnimation()
 
+        fun curl(): CurlPageAnimation = CurlPageAnimation()
+
     }
 
     enum class Direction {

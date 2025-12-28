@@ -3,15 +3,22 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material3.ButtonGroup
+import androidx.compose.material3.ButtonGroupDefaults
+import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
@@ -47,8 +54,11 @@ import org.jetbrains.compose.resources.ExperimentalResourceApi
 import androidx.compose.ui.tooling.preview.Preview
 import io.github.kitectlab.foliox.PageBackground
 import io.github.kitectlab.foliox.PageBackgrounds
+import io.github.kitectlab.foliox.animation.CoverPageAnimation
+import io.github.kitectlab.foliox.animation.CurlPageAnimation
+import io.github.kitectlab.foliox.animation.SlidePageAnimation
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 @Preview
 fun App() {
@@ -60,18 +70,50 @@ fun App() {
             Text("page direction: ${animationState.direction}")
             Text("page last offset: ${animationState.lastOffset}")
             Text("page target offset: ${animationState.finalOffset.value}")
-            PageReader(animationState)
+            val animations = remember {
+                listOf(
+                    PageAnimation.cover(),
+                    PageAnimation.slide(),
+                    PageAnimation.curl(),
+                )
+            }
+            val currentAnimation = remember(animations) { mutableStateOf(animations.last()) }
+            Row(horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween)) {
+                animations.forEachIndexed { index, animation ->
+                    ToggleButton(
+                        checked = currentAnimation.value == animation,
+                        onCheckedChange = {
+                            currentAnimation.value = animation
+                        },
+                        shapes = when (index) {
+                            0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                            animations.size - 1 -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                            else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                        }
+                    ) {
+                        Text(
+                            text = when(animation) {
+                                is CoverPageAnimation -> "Cover"
+                                is SlidePageAnimation -> "Slide"
+                                is CurlPageAnimation -> "Curl"
+                                else -> animation.toString()
+                            },
+                        )
+                    }
+                }
+            }
+            PageReader(animationState, currentAnimation.value, modifier = Modifier.weight(1f))
         }
     }
 }
 
 @Composable
-fun PageReader(animationState: PageAnimationState) {
+fun PageReader(animationState: PageAnimationState,animation: PageAnimation, modifier: Modifier = Modifier) {
     val resolver = LocalFontFamilyResolver.current
     val density = LocalDensity.current
     val direction = LocalLayoutDirection.current
     val style = LocalTextStyle.current
-    BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+    BoxWithConstraints(modifier = modifier.fillMaxSize()) {
         val source = remember(constraints) {
             TestPagingSource(
                 defaultFontFamilyResolver = resolver,
@@ -89,9 +131,9 @@ fun PageReader(animationState: PageAnimationState) {
         }
         val flow = pager.flow.collectAsLazyPagingItems()
 
-        var currentIndex by remember { mutableIntStateOf(0) }
+        var currentIndex by remember(flow) { mutableIntStateOf(0) }
         PageAnimationContent(
-            animation = PageAnimation.slide(),
+            animation = animation,
             state = animationState,
             onCurrentChange = {
                 when (it) {
@@ -105,7 +147,8 @@ fun PageReader(animationState: PageAnimationState) {
 
                     else -> {}
                 }
-            }
+            },
+            modifier = Modifier.fillMaxSize()
         ) {
             PageBackground(
                 style = PageBackgrounds.parchment(),
@@ -135,6 +178,7 @@ fun PageReader(animationState: PageAnimationState) {
                         if (currentIndex <= 0) {
                             Text("No item previous")
                         } else {
+
                             flow[currentIndex - 1]?.let {
                                 Text(it)
                             } ?: Text("loading previous")

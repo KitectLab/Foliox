@@ -61,11 +61,25 @@ class PageAnimationState {
             val startX = startFirstPoint.x
             val currentX = finalOffset.value.x
             val deltaX = currentX - startX
-            if (deltaX > viewportSize.width * SWIPE_THRESHOLD) {
-                targetDirection = Direction.PREVIOUS
-            }
-            if (-deltaX > viewportSize.width * SWIPE_THRESHOLD) {
-                targetDirection = Direction.NEXT
+            when (direction) {
+                Direction.NEXT -> {
+                    if (-deltaX > viewportSize.width * SWIPE_THRESHOLD) {
+                        targetDirection = Direction.NEXT
+                    }
+                }
+                Direction.PREVIOUS -> {
+                    if (deltaX > viewportSize.width * SWIPE_THRESHOLD) {
+                        targetDirection = Direction.PREVIOUS
+                    }
+                }
+                Direction.NONE -> {
+                    if (deltaX > viewportSize.width * SWIPE_THRESHOLD) {
+                        targetDirection = Direction.PREVIOUS
+                    }
+                    if (-deltaX > viewportSize.width * SWIPE_THRESHOLD) {
+                        targetDirection = Direction.NEXT
+                    }
+                }
             }
             if (targetDirection == Direction.NEXT && !hasNext) {
                 targetDirection = Direction.NONE
