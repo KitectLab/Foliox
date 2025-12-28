@@ -18,6 +18,7 @@ dependencyResolutionManagement {
     }
 }
 
+includeBuild("build-logic")
 include(":sampleApp:sharedApp")
 include(":sampleApp:androidApp")
 include(":sampleApp:jvmApp")

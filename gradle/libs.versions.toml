@@ -1,5 +1,5 @@
 [versions]
-agp = "9.0.0-beta05"
+agp = "9.0.0-rc01"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
@@ -39,3 +39,4 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin"}
 androidKotlinMultiplatformLibrary = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
+buildLogic = { id = "io.github.kitectlab.foliox.build-logic" }
