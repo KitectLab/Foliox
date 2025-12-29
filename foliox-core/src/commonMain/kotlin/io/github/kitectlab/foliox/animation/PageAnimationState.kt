@@ -12,6 +12,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.unit.IntSize
+import io.github.kitectlab.foliox.PageType
 import io.github.kitectlab.foliox.animation.PageAnimation.Companion.EDGE_ZONE_FRACTION
 import io.github.kitectlab.foliox.animation.PageAnimation.Companion.SWIPE_THRESHOLD
 import io.github.kitectlab.foliox.animation.PageAnimation.Direction
@@ -140,6 +141,16 @@ class PageAnimationState {
             finalOffset.animateTo(targetOffset)
             targetDirection
         }
+    }
+
+    suspend fun onTap(offset: Offset, onCurrentPageChange:(pageType: PageType) -> Unit) {
+        val direction = tap(offset)
+        if (direction == Direction.NEXT) {
+            onCurrentPageChange(PageType.NEXT)
+        } else if (direction == Direction.PREVIOUS) {
+            onCurrentPageChange(PageType.PREVIOUS)
+        }
+        resetAnimation()
     }
 
     suspend fun snapTo(offset: Offset) {

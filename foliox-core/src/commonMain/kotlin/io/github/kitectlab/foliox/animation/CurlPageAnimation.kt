@@ -302,7 +302,7 @@ private fun buildPathA(
             path.quadraticTo(points.e.x, points.e.y, points.b.x, points.b.y)
             path.lineTo(points.a.x, points.a.y)
             path.lineTo(points.k.x, points.k.y)
-            path.quadraticBezierTo(points.h.x, points.h.y, points.j.x, points.j.y)
+            path.quadraticTo(points.h.x, points.h.y, points.j.x, points.j.y)
             path.lineTo(0f, 0f)
         }
     }
@@ -333,7 +333,7 @@ private fun DrawScope.drawBackContent(
     if (eh <= MIN_TOUCH_DELTA) return
     val sin0 = (f.x - e.x) / eh
     val cos0 = (h.y - f.y) / eh
-    val degrees = atan2(sin0, cos0).toDouble().toDegrees().toFloat()
+    val degrees = atan2(sin0, cos0).toDouble().toDegrees()
     withTransform({
         rotate(-degrees, pivot = e)
         scale(scaleX = -1f, scaleY = 1f, pivot = e)

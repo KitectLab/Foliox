@@ -25,6 +25,7 @@ fun PageAnimationContent(
     animation: PageAnimation = PageAnimation.cover(),
     onCurrentChange: (pageType: PageType) -> Unit = {},
     background: DrawScope.(pageType: PageType) -> Unit = {  },
+    tapEnabled: Boolean = true,
     content: @Composable (pageType: PageType) -> Unit
 ) {
     val targetGraphicLayer = rememberGraphicsLayer()
@@ -59,20 +60,16 @@ fun PageAnimationContent(
                     }
                 }
         }
-            .pointerInput(state) {
-                detectTapGestures(
-                    onTap = {
-                        scope.launch {
-                            val direction = state.tap(it)
-                            if (direction == Direction.NEXT) {
-                                onCurrentChange(PageType.NEXT)
-                            } else if (direction == Direction.PREVIOUS) {
-                                onCurrentChange(PageType.PREVIOUS)
+            .pointerInput(state, tapEnabled) {
+                if (tapEnabled) {
+                    detectTapGestures(
+                        onTap = {
+                            scope.launch {
+                                state.onTap(it, onCurrentChange)
                             }
-                            state.resetAnimation()
                         }
-                    }
-                )
+                    )
+                }
             }
             .pointerInput(state) {
                 detectDragGestures(

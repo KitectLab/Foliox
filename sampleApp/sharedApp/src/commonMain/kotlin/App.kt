@@ -131,6 +131,7 @@ fun PageReader(animationState: PageAnimationState,animation: PageAnimation, modi
         val flow = pager.flow.collectAsLazyPagingItems()
 
         var currentIndex by remember(flow) { mutableIntStateOf(0) }
+        val scope = rememberCoroutineScope()
         PageAnimationContent(
             animation = animation,
             state = animationState,
