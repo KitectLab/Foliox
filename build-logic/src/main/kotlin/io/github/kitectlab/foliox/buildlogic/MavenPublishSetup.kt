@@ -11,7 +11,7 @@ internal fun Project.mavenPublishSetup() {
         publishToMavenCentral()
         signAllPublications()
         coordinates(
-            artifactId = "foliox-${project.name.removePrefix("foliox-")}"
+            artifactId = "foliox-${project.name.removePrefix("foliox-")}",
         )
         pomSetup(project)
     }
