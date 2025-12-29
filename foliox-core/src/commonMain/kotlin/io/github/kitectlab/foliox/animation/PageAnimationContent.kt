@@ -7,6 +7,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.withTransform
@@ -25,7 +26,7 @@ fun PageAnimationContent(
     animation: PageAnimation = PageAnimation.cover(),
     onCurrentChange: (pageType: PageType) -> Unit = {},
     background: DrawScope.(pageType: PageType) -> Unit = {  },
-    tapEnabled: Boolean = true,
+    onTapInterop: (suspend (offset: Offset) -> Boolean)? = null,
     content: @Composable (pageType: PageType) -> Unit
 ) {
     val targetGraphicLayer = rememberGraphicsLayer()
@@ -60,12 +61,14 @@ fun PageAnimationContent(
                     }
                 }
         }
-            .pointerInput(state, tapEnabled) {
-                if (tapEnabled) {
+            .pointerInput(state, onTapInterop) {
+                if (onTapInterop != null) {
                     detectTapGestures(
                         onTap = {
                             scope.launch {
-                                state.onTap(it, onCurrentChange)
+                                if (!onTapInterop(it)) {
+                                    state.onTap(it, onCurrentChange)
+                                }
                             }
                         }
                     )
