@@ -161,3 +161,7 @@ All dependency versions are managed in `gradle/libs.versions.toml`. Add or upgra
 
 - Compose/Web and Kotlin/Wasm are experimental and may change.
 - If a task is missing, run `./gradlew.bat tasks --all` to find the equivalent.
+
+## License
+
+Apache License 2.0. See `LICENSE`.
