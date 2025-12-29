@@ -62,17 +62,15 @@ fun PageAnimationContent(
                 }
         }
             .pointerInput(state, onTapInterop) {
-                if (onTapInterop != null) {
-                    detectTapGestures(
-                        onTap = {
-                            scope.launch {
-                                if (!onTapInterop(it)) {
-                                    state.onTap(it, onCurrentChange)
-                                }
+                detectTapGestures(
+                    onTap = {
+                        scope.launch {
+                            if (onTapInterop?.invoke(it)?.not() ?: true) {
+                                state.onTap(it, onCurrentChange)
                             }
                         }
-                    )
-                }
+                    }
+                )
             }
             .pointerInput(state) {
                 detectDragGestures(
