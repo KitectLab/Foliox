@@ -44,6 +44,11 @@ fun KotlinMultiplatformExtension.applyTargets(namespaceModule: String) {
 
     jvm()
 
+    wasmJs { browser() }
+    js { browser() }
+
+    macosArm64()
+
     applyDefaultHierarchyTemplate {
         sourceSetTrees(KotlinSourceSetTree.main, KotlinSourceSetTree.test)
         common {

@@ -1,7 +1,5 @@
 import io.github.kitectlab.foliox.buildlogic.applyKotlinOptions
 import io.github.kitectlab.foliox.buildlogic.applyTargets
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -24,7 +22,8 @@ kotlin {
             implementation(libs.compose.ui)
             implementation(libs.compose.components.resources)
             implementation(libs.compose.ui.tooling.preview)
-            implementation("androidx.paging:paging-common:3.3.6")
+            implementation(libs.androidx.paging.common)
+            implementation(libs.androidx.paging.compose)
             implementation(projects.folioxCore)
         }
 

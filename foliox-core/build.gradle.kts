@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlinCompose)
     alias(libs.plugins.androidKotlinMultiplatformLibrary)
     alias(libs.plugins.jetbrainsCompose)
+    alias(libs.plugins.buildLogic)
+    alias(libs.plugins.vanniktechMavenPublish)
 }
 
 kotlin {

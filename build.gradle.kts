@@ -5,5 +5,6 @@ plugins {
     alias(libs.plugins.jetbrainsCompose) apply false
     alias(libs.plugins.kotlinMultiplatform) apply false
     alias(libs.plugins.androidKotlinMultiplatformLibrary) apply false
-    alias(libs.plugins.buildLogic)
+    alias(libs.plugins.buildLogic) apply false
+    alias(libs.plugins.vanniktechMavenPublish) apply false
 }

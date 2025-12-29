@@ -20,6 +20,7 @@ dependencies {
     implementation(gradleApi())
     gradlePluginImplementation(libs.plugins.kotlinMultiplatform.get())
     gradlePluginImplementation(libs.plugins.androidKotlinMultiplatformLibrary.get())
+    gradlePluginImplementation(libs.plugins.vanniktechMavenPublish.get())
 }
 
 gradlePlugin {

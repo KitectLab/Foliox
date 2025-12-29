@@ -9,10 +9,8 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.selection.SelectionContainer
-import androidx.compose.material3.ButtonGroup
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.LocalTextStyle
@@ -52,6 +50,7 @@ import io.github.kitectlab.foliox.animation.rememberPageAnimationState
 import kotlinx.coroutines.launch
 import org.jetbrains.compose.resources.ExperimentalResourceApi
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.paging.compose.collectAsLazyPagingItems
 import io.github.kitectlab.foliox.PageBackground
 import io.github.kitectlab.foliox.PageBackgrounds
 import io.github.kitectlab.foliox.animation.CoverPageAnimation
