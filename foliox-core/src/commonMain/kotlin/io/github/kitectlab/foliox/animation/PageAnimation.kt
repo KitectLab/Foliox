@@ -2,6 +2,7 @@ package io.github.kitectlab.foliox.animation
 
 
 import androidx.compose.runtime.Stable
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
@@ -67,6 +68,91 @@ abstract class PageAnimation {
     }
 
     abstract fun DrawScope.transformCanvas(state: PageAnimationState, pageType: PageType, drawBlock: DrawScope.() -> Unit)
+
+    open suspend fun handleTap(
+        state: PageAnimationState,
+        offset: Offset,
+        onCurrentPageChange: (pageType: PageType) -> Unit
+    ) {
+        state.startTap(offset)
+        val direction = resolveTapDirection(state, offset)
+        animateToDirection(state, direction)
+        if (direction == Direction.NEXT) {
+            onCurrentPageChange(PageType.NEXT)
+        } else if (direction == Direction.PREVIOUS) {
+            onCurrentPageChange(PageType.PREVIOUS)
+        }
+        state.resetAnimation()
+    }
+
+    open suspend fun handleDragEnd(
+        state: PageAnimationState,
+        onCurrentPageChange: (pageType: PageType) -> Unit
+    ) {
+        val direction = resolveReleaseDirection(state)
+        state.dragging = false
+        animateToDirection(state, direction)
+        if (direction == Direction.NEXT) {
+            onCurrentPageChange(PageType.NEXT)
+        } else if (direction == Direction.PREVIOUS) {
+            onCurrentPageChange(PageType.PREVIOUS)
+        }
+        state.resetAnimation()
+    }
+
+    protected open fun resolveTapDirection(state: PageAnimationState, tapOffset: Offset): Direction {
+        val width = state.viewportSize.width.toFloat()
+        if (width <= 0f) return Direction.NONE
+        val startX = tapOffset.x
+        val direction = when {
+            startX < width * EDGE_ZONE_FRACTION -> Direction.PREVIOUS
+            startX > width * (1 - EDGE_ZONE_FRACTION) -> Direction.NEXT
+            else -> Direction.NONE
+        }
+        return clampDirectionByAvailability(direction, state)
+    }
+
+    protected open fun resolveReleaseDirection(state: PageAnimationState): Direction {
+        val width = state.viewportSize.width.toFloat()
+        if (width <= 0f) return Direction.NONE
+        val startX = state.startFirstPoint.x
+        val currentX = state.finalOffset.value.x
+        val deltaX = currentX - startX
+        val direction = when (state.direction) {
+            Direction.NEXT -> if (-deltaX > width * SWIPE_THRESHOLD) Direction.NEXT else Direction.NONE
+            Direction.PREVIOUS -> if (deltaX > width * SWIPE_THRESHOLD) Direction.PREVIOUS else Direction.NONE
+            Direction.NONE -> when {
+                deltaX > width * SWIPE_THRESHOLD -> Direction.PREVIOUS
+                -deltaX > width * SWIPE_THRESHOLD -> Direction.NEXT
+                else -> Direction.NONE
+            }
+        }
+        return clampDirectionByAvailability(direction, state)
+    }
+
+    protected open suspend fun animateToDirection(state: PageAnimationState, direction: Direction) {
+        val width = state.viewportSize.width.toFloat()
+        val targetOffset = when (direction) {
+            Direction.NEXT -> Offset(
+                x = state.startFirstPoint.x - width,
+                y = state.startFirstPoint.y
+            )
+            Direction.PREVIOUS -> Offset(
+                x = state.startFirstPoint.x + width,
+                y = state.startFirstPoint.y
+            )
+            Direction.NONE -> state.startFirstPoint
+        }
+        state.animateTo(targetOffset)
+    }
+
+    protected fun clampDirectionByAvailability(direction: Direction, state: PageAnimationState): Direction {
+        return when (direction) {
+            Direction.NEXT if !state.hasNext -> Direction.NONE
+            Direction.PREVIOUS if !state.hasPrevious -> Direction.NONE
+            else -> direction
+        }
+    }
 
     companion object {
         internal const val SWIPE_THRESHOLD = 0.2f  // 滑动超过屏幕宽度的20%

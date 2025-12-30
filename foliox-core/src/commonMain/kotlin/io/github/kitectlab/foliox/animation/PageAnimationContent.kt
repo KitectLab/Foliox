@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.Layout
 import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import io.github.kitectlab.foliox.PageType
 import io.github.kitectlab.foliox.animation.PageAnimation.Direction
 import kotlinx.coroutines.launch
@@ -32,6 +33,8 @@ fun PageAnimationContent(
     val targetGraphicLayer = rememberGraphicsLayer()
     val currentGraphicLayer = rememberGraphicsLayer()
     val scope = rememberCoroutineScope()
+    val density = LocalDensity.current
+    state.density = density.density
     Layout(
         contents = listOf(
             { content(PageType.PREVIOUS) },
@@ -66,7 +69,7 @@ fun PageAnimationContent(
                     onTap = {
                         scope.launch {
                             if (onTapInterop?.invoke(it)?.not() ?: true) {
-                                state.onTap(it, onCurrentChange)
+                                animation.handleTap(state, it, onCurrentChange)
                             }
                         }
                     }
@@ -81,13 +84,7 @@ fun PageAnimationContent(
                     },
                     onDragEnd = {
                         scope.launch {
-                            val direction = state.dragEnd()
-                            if (direction == Direction.NEXT) {
-                                onCurrentChange(PageType.NEXT)
-                            } else if (direction == Direction.PREVIOUS) {
-                                onCurrentChange(PageType.PREVIOUS)
-                            }
-                            state.resetAnimation()
+                            animation.handleDragEnd(state, onCurrentChange)
                         }
                     },
                     onDragCancel = {
