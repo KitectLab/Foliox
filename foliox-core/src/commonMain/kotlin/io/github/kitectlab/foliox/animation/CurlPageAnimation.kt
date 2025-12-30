@@ -132,6 +132,23 @@ data object CurlPageAnimation : PageAnimation() {
     ) {
         drawBlock()
     }
+
+    override suspend fun animateToDirection(state: PageAnimationState, direction: Direction) {
+        val width = state.viewportSize.width.toFloat()
+        val height = state.viewportSize.height.toFloat()
+        if (width <= 0f || height <= 0f) {
+            super.animateToDirection(state, direction)
+            return
+        }
+        val isTop = state.startFirstPoint.y <= height / 2f
+        val targetOffset = when (direction) {
+            Direction.NEXT -> Offset(x = 0f, y = if (isTop) 0f else height)
+            Direction.PREVIOUS -> Offset(x = width, y = if (isTop) 0f else height)
+            Direction.NONE -> state.startFirstPoint
+        }
+        state.animateTo(targetOffset)
+    }
+
 }
 
 private const val MIN_TOUCH_DELTA = 0.1f
