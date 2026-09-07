@@ -4,6 +4,7 @@ import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
@@ -34,6 +35,7 @@ fun PageAnimationContent(
     val currentGraphicLayer = rememberGraphicsLayer()
     val scope = rememberCoroutineScope()
     val density = LocalDensity.current
+    val onCurrentChangeState = rememberUpdatedState(onCurrentChange)
     state.density = density.density
     Layout(
         contents = listOf(
@@ -69,7 +71,7 @@ fun PageAnimationContent(
                     onTap = {
                         scope.launch {
                             if (onTapInterop?.invoke(it)?.not() ?: true) {
-                                animation.handleTap(state, it, onCurrentChange)
+                                animation.handleTap(state, it, onCurrentChangeState.value)
                             }
                         }
                     }
@@ -84,7 +86,7 @@ fun PageAnimationContent(
                     },
                     onDragEnd = {
                         scope.launch {
-                            animation.handleDragEnd(state, onCurrentChange)
+                            animation.handleDragEnd(state, onCurrentChangeState.value)
                         }
                     },
                     onDragCancel = {
