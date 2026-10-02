@@ -159,6 +159,12 @@ All dependency versions are managed in `gradle/libs.versions.toml`. Add or upgra
 
 ## Notes
 
+- [Snapshot Build](.github/workflows/snapshot_build.yml) tests and publishes
+  `0.1.0-SNAPSHOT` on pushes to `master`, on the first day of each month at
+  02:17 UTC (10:17 Asia/Shanghai), and via manual workflow dispatch.
+- Publishing uses the existing `MAVEN_CENTRAL_USERNAME`, `MAVEN_CENTRAL_PASSWORD`,
+  `MAVEN_SIGNING_KEY`, `MAVEN_SIGNING_KEY_ID`, and `MAVEN_SIGNING_PASSWORD` repository secrets.
+
 - Compose/Web and Kotlin/Wasm are experimental and may change.
 - If a task is missing, run `./gradlew.bat tasks --all` to find the equivalent.
 
