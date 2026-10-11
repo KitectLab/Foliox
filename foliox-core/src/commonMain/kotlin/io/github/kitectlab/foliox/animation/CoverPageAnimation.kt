@@ -47,7 +47,7 @@ data object CoverPageAnimation : PageAnimation() {
             Direction.PREVIOUS -> {
                 background(PageType.CURRENT)
                 drawLayer(currentGraphicLayer)
-                val delta = (state.finalOffset.value.x - state.startFirstPoint.x).coerceIn(0f, maxTravel)
+                val delta = (state.finalOffset.value.x - state.startFirstPoint.x).coerceIn(0f, width)
                 drawOuterEdgeShadow(
                     edgeX = delta,
                     width = width,
@@ -93,7 +93,7 @@ data object CoverPageAnimation : PageAnimation() {
                         } else if (state.direction == Direction.PREVIOUS && pageType == PageType.PREVIOUS) {
                             translate(
                                 left = -width + (state.finalOffset.value.x - state.startFirstPoint.x)
-                                    .coerceIn(0f, maxTravel),
+                                    .coerceIn(0f, width),
                             )
                         }
                     }
@@ -113,7 +113,8 @@ data object CoverPageAnimation : PageAnimation() {
                 y = state.startFirstPoint.y
             )
             Direction.PREVIOUS -> Offset(
-                x = state.startFirstPoint.x + travel,
+                // Only the outgoing page needs extra travel to clear its shadow.
+                x = state.startFirstPoint.x + width,
                 y = state.startFirstPoint.y
             )
             Direction.NONE -> state.startFirstPoint
